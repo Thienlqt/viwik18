@@ -1,6 +1,6 @@
 # Set up
 ## Create dataset ready dir
-cd viwik18
+    $ cd viwik18
 mkdir -p dataset_ready
 ## Merge to single file
     $ cat dataset/viwik18_* > dataset_ready/viwik18.txt
