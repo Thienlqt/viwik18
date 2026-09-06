@@ -1,0 +1,4 @@
+# Use Python 3.11; Python itself is installed separately, not through pip.
+gensim==4.4.0
+numpy==2.4.6
+scipy==1.17.1

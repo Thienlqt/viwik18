@@ -1,0 +1,5 @@
+.DS_Store
+.vscode
+/models
+settings.json
+/dataset_ready

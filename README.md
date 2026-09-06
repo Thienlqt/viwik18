@@ -1,20 +1,48 @@
-# viwik18 dataset
-
-Clean Vietnamese Text - Wikipedia dump 08-2018
-
-Alphabet: aáàảãạăaáàảãạăắằẳẵặâấầẩẫậbcdđeéèẻẽẹêếềểễệfghiíìỉĩịjklmnoóòỏõọôốồổỗộơớờởỡợpqrstuúùủũụưứừửữựvwxyýỳỷỹỵz
-
+# Set up
+## Create dataset ready dir
+mkdir -p dataset_ready
 ## Merge to single file
+    $ cat dataset/viwik18_* > dataset_ready/viwik18.txt
 
-        $ cat dataset/viwik18_* > viwik18.txt
+## Build dataset
+```bash
+python utils/build_dataset.py
+```
 
-## Generate the dataset manually
+Use Python 3.11. Run these commands from the project directory (macOS/Linux):
 
-        $ wget https://dumps.wikimedia.org/viwiki/20180801/viwiki-20180801-pages-articles.xml.bz2
-        $ bzip2 -d viwiki-20180801-pages-articles.xml.bz2
-        $ python WikiExtractor.py --no-templates -s --lists viwiki-20180801-pages-articles.xml -q -o - | perl -CSAD -Mutf8 cleaner.pl > viwik18.txt
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
 
+On Windows, activate with `.venv\Scripts\activate` instead. The patch script
+builds for the current machine and needs a C compiler (Xcode Command Line Tools
+on macOS, GCC on Linux, or compatible MSVC Build Tools on Windows). This setup
+has been tested on macOS ARM64 with Python 3.11; other platforms are unverified.
 
-## viwik19 dataset
+# Train
 
-Checkout the new dataset `viwik19` at https://github.com/NTT123/viwik18/tree/viwik19
+```bash
+source .venv/bin/activate
+mkdir -p models/sgns
+mkdir -p models/cbow
+python main.py
+```
+
+`main.py` currently trains SGNS using
+`dataset_compressed/viwik18_lineSentences.txt` and saves to
+`models/sgns/word2vec_sgns.model`. Full training may take a long time.
+
+# Inference
+
+```bash
+source .venv/bin/activate
+python inference.py
+```
+
+`inference.py` currently loads `models/sgns/word2vec_sgns.model`.
+To query the CBOW model produced by `main.py`, change its load path to
+`model/cbow/word2vec_cbow.model`. Keep each model's accompanying `.npy` files
+next to its `.model` file.

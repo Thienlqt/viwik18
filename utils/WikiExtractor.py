@@ -60,7 +60,6 @@ import sys
 import argparse
 import bz2
 import codecs
-import cgi
 import fileinput
 import logging
 import os.path
@@ -75,6 +74,7 @@ from timeit import default_timer
 PY2 = sys.version_info[0] == 2
 # Python 2.7 compatibiity
 if PY2:
+    from cgi import escape as html_escape
     from urllib import quote
     from htmlentitydefs import name2codepoint
     from itertools import izip as zip, izip_longest as zip_longest
@@ -92,6 +92,7 @@ if PY2:
         def __eq__ (self, other):
             return self.__dict__ == other.__dict__
 else:
+    from html import escape as html_escape
     from urllib.parse import quote
     from html.entities import name2codepoint
     from itertools import zip_longest
@@ -790,7 +791,7 @@ class Extractor(object):
             text = text.replace('|-', '')
             text = text.replace('|', '')
         if options.toHTML:
-            text = cgi.escape(text)
+            text = html_escape(text, quote=False)
         return text
 
 
@@ -2427,16 +2428,16 @@ wgUrlProtocols = [
 EXT_LINK_URL_CLASS = r'[^][<>"\x00-\x20\x7F\s]'
 ANCHOR_CLASS = r'[^][\x00-\x08\x0a-\x1F]'
 ExtLinkBracketedRegex = re.compile(
-    '\[(((?i)' + '|'.join(wgUrlProtocols) + ')' + EXT_LINK_URL_CLASS + r'+)' +
+    '\[((' + '|'.join(wgUrlProtocols) + ')' + EXT_LINK_URL_CLASS + r'+)' +
     r'\s*((?:' + ANCHOR_CLASS + r'|\[\[' + ANCHOR_CLASS + r'+\]\])' + r'*?)\]',
-    re.S | re.U)
+    re.I | re.S | re.U)
 # A simpler alternative:
-# ExtLinkBracketedRegex = re.compile(r'\[(.*?)\](?!])')
+#ExtLinkBracketedRegex = re.compile(r'\[(.*?)\](?!])')
 
 EXT_IMAGE_REGEX = re.compile(
     r"""^(http://|https://)([^][<>"\x00-\x20\x7F\s]+)
-    /([A-Za-z0-9_.,~%\-+&;#*?!=()@\x80-\xFF]+)\.((?i)gif|png|jpg|jpeg)$""",
-    re.X | re.S | re.U)
+    /([A-Za-z0-9_.,~%\-+&;#*?!=()@\x80-\xFF]+)\.(gif|png|jpg|jpeg)$""",
+    re.I | re.X | re.S | re.U)
 
 
 def replaceExternalLinks(text):
