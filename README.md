@@ -29,7 +29,7 @@ has been tested on macOS ARM64 with Python 3.11; other platforms are unverified.
 source .venv/bin/activate
 mkdir -p models/sgns
 mkdir -p models/cbow
-python main.py
+python train.py
 ```
 
 `main.py` currently trains SGNS using
