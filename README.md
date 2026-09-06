@@ -32,7 +32,7 @@ mkdir -p models/cbow
 python train.py
 ```
 
-`main.py` currently trains SGNS using
+`train.py` currently trains SGNS using
 `dataset_compressed/viwik18_lineSentences.txt` and saves to
 `models/sgns/word2vec_sgns.model`. Full training may take a long time.
 
@@ -44,6 +44,6 @@ python inference.py
 ```
 
 `inference.py` currently loads `models/sgns/word2vec_sgns.model`.
-To query the CBOW model produced by `main.py`, change its load path to
+To query the CBOW model produced by `train.py`, change its load path to
 `model/cbow/word2vec_cbow.model`. Keep each model's accompanying `.npy` files
 next to its `.model` file.
